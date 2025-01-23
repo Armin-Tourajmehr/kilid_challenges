@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:latest
+    container_name: bayut_db_container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: bayut_db
+      MYSQL_USER: ****
+      MYSQL_PASSWORD: ****
+    ports:
+      - "3307:3306"  # This maps port 3307 on the host to 3306 inside the container
+    networks:
+      - bayut-network
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$MYSQL_ROOT_PASSWORD"]
+      interval: 30s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+  app:
+    build: .
+    container_name: app-1
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: "bayut_db_container"  # Use service name instead of localhost
+      DB_USER: "****"
+      DB_PASS: "****"
+      DB_NAME: "bayut_db"
+    networks:
+      - bayut-network
+
+
+networks:
+  bayut-network:
+
+volumes:
+  db_data:

@@ -1,0 +1,14 @@
+CREATE DATABASE IF NOT EXISTS bayut_db;
+
+USE bayut_db;
+
+CREATE TABLE IF NOT EXISTS properties (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    price VARCHAR(50) NOT NULL,
+    property_type VARCHAR(50) NOT NULL,
+    purpose VARCHAR(50) NOT NULL,
+    size VARCHAR(50) NOT NULL,
+    region VARCHAR(100),
+    trucheck BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
